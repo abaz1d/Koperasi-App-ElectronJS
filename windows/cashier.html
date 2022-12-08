@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/jquery/jquery-ui-1.9.2.custom/css/base/jquery-ui-1.9.2.custom.min.css">
+</head>
+
+<body style="background-color: #F0F3F4;">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+        <div class="container-fluid">
+            <div style="display: inline-block; color: aliceblue;">
+                <img src="../assets/images/icons/small-cash-machine.png" alt="" class="ms-1" id="store-logo" style="width: 30px; height: 30px;">
+                <span id="store-name" class="ms-2" style="font-size: 14.5px;"></span>
+            </div>
+            <div style="display: inline-block;">
+                <div class="dropdown" style="display: inline;">
+                    <a href="#" class="btn btn-primary" id="userInfoDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fa-solid fa-user"></i>
+                        <span id="userFirstName">User</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-light" style="width: 200px;"
+                        aria-labelledby="userInfoDropdown">
+                        <div class="dropdown-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size: 14px;">Acces Level</th>
+                                        <th style="font-size: 14px;">Position</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td id="userAccesLevel"></td>
+                                        <td id="userPosition"></td>
+                                    </tr>
+                            </table>
+                            <button class="btn btn-danger" id="logoutBtn"><i class="fa-solid fa-sign-out"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div style="padding: 70px 0px 10px 0px;">
+        <div class="row small-gutters">
+            <div class="col-md-8">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h6>
+                            <img src="" alt="" class="me-sm-1">
+                            <button class="btn btn-sm btn-light btn-light-bordered" id="edit-qty" title="Edit Quantity"><i class="fa-solid fa-dolly"></i></button>
+                            <button class="btn btn-sm btn-light btn-light-bordered" id="discount-product" title="Potongan"><i class="fa-solid fa-tag"></i></button>
+                            <button class="btn btn-sm btn-light btn-light-bordered" id="discount-final" title="Potongan Final"><i class="fa-solid fa-tags"></i></button>
+                            <button class="btn btn-sm btn-light btn-light-bordered" id="btn-new-sales" onclick="startNewSales()" data-bs-toggle="modal" 
+                            data-bs-backdrop="false" data-bs-target="#modal-new-sales" title="Tambah Penjualan" autofocus><i class="fa-solid fa-plus"></i></button>
+
+                            <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></button> -->
+                        </h6>
+                    </div>
+                    <div class="box-body">
+                        <div class="row g-3">
+                            <div class="col-auto">
+                                <div class="btn-group mb-2">
+                                    <input type="text" class="form-control form-control-sm sales-input" id="product_code" placeholder="Kode/Barcode Produk" disabled>
+                                    <button class="btn btn-sm btn-primary sales-input" id="btn_add_sales" onclick="insertSales()" disabled><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <select class="form-select form-select-sm mb-2 sales-input" id="product_name" onchange="getCodeByName()" disabled></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sales-record">
+                        <div class="table-responsive m-3" style="height: 250px;">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Produk</th>
+                                        <th>Kode Produk</th>
+                                        <th><span class="float-end">Harga</span></th>
+                                        <th style="text-align: center;">Qty</th>
+                                        <th>Satuan</th>
+                                        <th>Potongan</th>
+                                        <th><span class="float-end">Total</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sales-data"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="table-responsive ms-3 mt-3 me-3">
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td><span class="float-end">Potongan Final</span></td>
+                                    <td><span class="float-end" id="discount_final"></span></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="float-end">PPN</span></td>
+                                    <td>
+                                        <span class="float-end" id="tax"></span>
+                                        <input type="hidden" class="float-end" id="input-tax">
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="float-end"><b>Total</b></span></td>
+                                    <td><span class="float-end" id="total-and-tax" style="font-weight: bold;"></span></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="box-footer" style="margin-left: 0px; margin-right: 0px;">
+                        <button class="btn btn-sm btn-primary float-end" id="btn-checkout"><i class="fa-solid fa-right-from-bracket"></i> Checkout (F2)</button>
+                        <button class="btn button-sm btn-light btn-light-bordered p-1" id="btn-close-cashier" onclick="closeCashier()"><i class="fa-solid fa-times"></i> Close Kasir</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="box-common">
+                    <table class="table table-bordered" style="font-size: 14px; border: 1px solid #B3B6B7;">
+                        <tbody style="color: black;">
+                            <tr>
+                                <td><span class="badge text-bg-success"><i class="fa-solid fa-user"></i> Admin</span></td>
+                                <td>: <span id="info-sales-cashier"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge text-bg-warning"><i class="fa-solid fa-calendar"></i> Tanggal</span></td>
+                                <td>: <span id="info-sales-date"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge text-bg-secondary"><i class="fa-solid fa-file"></i> No. Invoice</span></td>
+                                <td>: <span id="info-sales-number"></span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge text-bg-primary"><i class="fa-solid fa-user"></i> Customer</span></td>
+                                <td>: <span id="info-buyer"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="divider" style="margin-top: 0px;"></div>
+                    <div class="box-info">
+                        <div class="box-info-body" style="background-color: #F8F9FA;">
+                            <div class="box-info-left"><i class="fa-solid fa-shopping-cart"></i></div>
+                            <div class="box-info-right float-end"><h3 id="info-total-sales"></h3></div>
+                        </div>
+                        <div class="box-info-title">Total Penjualan</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade sales-modal" id="modal-new-sales" data-bs-backdrop="static" role="dialog" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-new-sales" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content with-shadow">
+                <div class="modal-header bg-dark">
+                    <h2 class="modal-title fs-5" style="color: white;" id="staticBackdropLabel">Penjualan Baru</h2>
+                    <a href="#" type="button" class="close" style="color: white;" data-bs-dismiss="modal">
+                        <span aria-hidden="true"><i class="fa-solid fa-times"></i></span>
+                    </a>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <input type="text" class="form-control form-control-sm" placeholder="Nama Faktur" id="sales-number" disabled>
+                    </div>
+                    <div class="mb-2">
+                        <select class="form-select form-select-sm" name="" id="buyer-select" data-table="buyers"></select>
+                        <input type="hidden" id="buyer-id">
+                        <small class="form-text text-muted" id="buyerHelp">
+                            <a href="#" id="open-modal-buyer" data-bs-toggle="modal" data-bs-backdrop="false">Klik Di sini</a> untuk menambahkan data customer baru
+                        </small>
+                </div>
+                <div class="mb-2">
+                    <textarea name="" id="buyer-address" cols="30" rows="3" class="form-control form-control-sm" placeholder="Alamat Customer / Buyer"></textarea>
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control form-control-sm" placeholder="Nomor PO" id="po-number">
+                </div>
+                <div class="mb-2">
+                    <select class="form-select form-select-sm" id="cash-credit">
+                        <option value="cash">Cash</option>
+                        <option value="credit">Credit</option>
+                    </select>
+                </div>
+                <div class="mb-2" id="due-date-form-group">
+                    <label for="due-date">Jatuh Tempo</label>
+                    <input type="text" class="form-control form-control-sm" id="due-date" placeholder="Format Tanggal : YYYY-MM-DD">
+                </div>
+                <div class="mb-2" id="term-form-group">
+                    <input type="text" class="form-control form-control-sm" id="term" style="display: none;">
+                </div>
+                <div class="mb-2">
+                    <textarea name="" id="description" cols="30" rows="2" class="form-control form-control-sm" placeholder="Keterangan"></textarea>
+                </div>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input sales-tax" id="sales-tax">
+                    <label class="custom-control-label" for="sales-tax" style="font-size: 13px; color:black;">Beri PPN</label>
+                </div>
+                <div class="modal-footer"> 
+                    <button type="button" class="btn btn-sm btn-primary" id="btn-create-new-sales" onclick="openSales()" autofocus><i class="fa-solid fa-check"></i> Buat Penjualan</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal"><i class="fa-solid fa-times"></i> Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+
+    <script src="../assets/jquery/jquery-3.6.1.min.js"></script>
+    <script src="../assets/jquery/jquery-migrate-3.4.0.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/jquery/jquery-ui-1.9.2.custom/js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script src="../assets/js/require.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/cashier.js"></script>
+
+
+    <script>if (window.module) module = window.module;</script>
+</body>
+
+</html>

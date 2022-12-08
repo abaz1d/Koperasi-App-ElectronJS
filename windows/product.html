@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'"> -->
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+
+<body id="product-data">
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <div style="display: inline-block; color: aliceblue;">
+                <span id="store-name" class="ms-2" style="font-size: 14.5px;">
+                    My Store
+                </span>
+            </div>
+            <div class="collapse navbar-collapse" id="main_nav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active"> <a class="nav-link" href="#">Home </a> </li>
+                    <li class="nav-item"><a class="nav-link" href="#"> About </a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"> Services </a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link  dropdown-toggle" href="#" data-bs-toggle="dropdown"> Hover me </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"> Submenu item 1</a></li>
+                            <li><a class="dropdown-item" href="#"> Submenu item 2 </a></li>
+                            <li><a class="dropdown-item" href="#"> Submenu item 3 </a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#"> Menu item </a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"> Menu item </a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link  dropdown-toggle" href="#" data-bs-toggle="dropdown"> Dropdown right </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"> Submenu item 1</a></li>
+                            <li><a class="dropdown-item" href="#"> Submenu item 2 </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div> <!-- navbar-collapse.// -->
+            <div style="display: inline-block;">
+                <div class="dropdown" style="display: inline;">
+                    <a href="#" class="btn btn-primary" id="userInfoDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fa-solid fa-user"></i>
+                        <span id="userFirstName">User</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-light" style="width: 200px;"
+                        aria-labelledby="userInfoDropdown">
+                        <div class="dropdown-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="font-size: 14px;">Acces Level</th>
+                                        <th style="font-size: 14px;">Position</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td id="userAccesLevel"></td>
+                                        <td id="userPosition"></td>
+                                    </tr>
+                            </table>
+                            <button class="btn btn-danger" id="logoutBtn"><i class="fa-solid fa-sign-out"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="toolbar">
+        <div class="toolbar-menu">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="main-toolbar">
+                        <div class="row g-2">
+                            <div class="col-auto">
+                                <button class="btn btn-sm btn-light btn-light-bordered" id="add-data" title="Tambah Data" onclick="openFormAdddata()"><i class="fa-solid fa-plus"></i></button>
+                                <button class="btn btn-sm btn-light btn-light-bordered" onclick="deleteAction()" id='delete-multiple-data' data-bs-toggle="tooltip" title="Hapus Data"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn btn-sm btn-light btn-light-bordered" title="Export CSV" onclick="exportData('csv')" ><i class="fa-solid fa-file-excel"></i></button>
+                                <button class="btn btn-sm btn-light btn-light-bordered" title="Export PDF" onclick="exportData('pdf')" ><i class="fa-solid fa-file-pdf"></i></button>
+                                <button class="btn btn-sm btn-light btn-light-bordered" title="Print Table" onclick="printData()" ><i class="fa-solid fa-print"></i></button>
+                                <button class="btn btn-sm btn-light btn-light-bordered" onclick="selectAll()" id="select-all" title="Select All"><i class="fa-solid fa-check"></i></button>
+                                <button class="btn btn-sm btn-light btn-light-bordered" onclick="unSelectAll()" id="unselect-all" title="Unselect All"><i class="fa-solid fa-times"></i></button>
+                            </div>
+                            <div class="col-auto">
+                                <select name="" id="row_per_page" class="form-select form-select-sm">
+                                    <option value="2">2</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="75">75</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <div class="input-group" id="search-input-group">
+                                    <input type="text" class="form-control form-control-sm" id="search-data" placeholder="Search" name="search-data">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-sm btn-light btn-light-bordered" id="search-btn"><i class="fa-solid fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="pagination" class="col-auto">
+                                <div class="btn-group btn-group-sm">
+                                    <div class="btn-group btn-group-sm me-1">
+                                        <a href="#" class="btn btn-light btn-light-bordered" id="first-page"><i class="fa-solid fa-step-backward"></i></a>
+                                        <a href="#" class="btn btn-light btn-light-bordered" id="prev-page"><i class="fa-solid fa-backward"></i></a>
+                                    </div>
+                                    <div class="input-group input-group-sm me-1">
+                                        <input type="text" class="form-control form-control-sm" id="page_number" value="1">
+                                        <input type="text" class="form-control form-control-sm" id="total_pages" disabled>
+                                    </div>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="#" class="btn btn-light btn-light-bordered" id="next-page"><i class="fa-solid fa-forward"></i></a>
+                                        <a href="#" class="btn btn-light btn-light-bordered" id="last-page"><i class="fa-solid fa-step-forward"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="main-table">
+        <div id="form-add-data">
+            <div style="padding: 20px;">
+            <h6>Tambah Data</h6>
+            <div style="color: black;" class="row g-3">
+                <div class="col-auto">
+                    <input type="text" class="form-control form-control-sm" placeholder="Nama Produk" id="product_name" required>
+                </div>
+                <div class="col-auto">
+                    <select name="" id="product_category" class="form-select form-select-sm">
+                        <option value="">Kategori</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <div class="input-group" id="">
+                        <span class="input-group-text"><i class="fa-solid fa-rupiah-sign"></i></span>
+                        <input type="text" class="form-control form-control-sm" id="product_price" placeholder="Harga Jual" required>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="input-group" id="">
+                        <span class="input-group-text"><i class="fa-solid fa-rupiah-sign"></i></span>
+                        <input type="text" class="form-control form-control-sm" id="product_cost" placeholder="Harga Pokok" required>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <input type="text" class="form-control form-control-sm" placeholder="Stok Awal" id="product_intial_qty">
+                </div>
+                <div class="col-auto">
+                    <select name="" id="product_unit" class="form-select form-select-sm">
+                        <option value="">Satuan</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <input type="text" class="form-control form-control-sm" placeholder="Barcode" id="product_barcode" required>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-sm btn-primary" id="btn-add-data" onclick="insertProduct()"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+                    <button class="btn btn-sm btn-secondary" id="close-form-add-data" onclick="closeFormAdddata()"><i class="fa-solid fa-times"></i> Tutup</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div style="padding: 20px 20px 20px 20px;">
+            <div class="row">
+                <div clas="col-xl-12">
+                    <div id="alert"></div>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered" style="font-size: 13px;">
+                            <thead class="table-light">
+                                <tr>
+                                    <th></th>
+                                    <th>ID</th>
+                                    <th>Nama Produk</th>
+                                    <th>Kode Produk</th>
+                                    <th>Barcode</th>
+                                    <th>Kategori</th>
+                                    <th>Satuan</th>
+                                    <th>Harga Jual / Satuan</th>
+                                    <th>Harga Pokok / Satuan</th>
+                                    <th>Stok Awal</th>
+                                    <th class="d-flex justify-content-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="data">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+    <script src="../assets/jquery/jquery-3.6.1.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/require.js"></script>
+    <script src="../assets/js/product.js"></script>
+    <script src="../assets/js/main.js"></script>
+    
+
+    <script>if (window.module) module = window.module;</script>
+    
+    <script>
+        openFormAdddata = () => {
+            $('#form-add-data').addClass('active');
+            $('#product_name').focus();
+            loadCategoryOptions();
+            loadUnitOptions();
+        }
+
+        closeFormAdddata = () => {
+            $('#form-add-data').removeClass('active');
+            resetForm();
+        }
+
+        deleteAction = (id=false, data=false) => {
+            let msg = `Are you sure want to delete ${data} ?`;
+            if(id) {
+                dialogBox = dialog.showMessageBoxSync({
+                    type: 'question',
+                    title: 'Delete Records',
+                    buttons:['No', 'Yes'],
+                    defaultId: [0,1],
+                    message: msg
+                })
+                if (dialogBox === 0) {
+                    $('input.data-checkbox').prop('checked', false);
+                    $('tbody#data tr').removeClass('blocked');
+                } else {
+                    deleteRecord(id);
+                }
+            } else {
+                array_ids = [];
+                $('input.data-checkbox:checked').each(function() {
+                    let ids = $(this).attr('id');
+                    array_ids.push(ids);
+                });
+                if(array_ids.length < 1) {
+                    let msgBox = dialog.showMessageBoxSync({
+                        type: 'question',
+                        title: 'Delete Records',
+                        buttons:['No', 'Yes'],
+                        defaultId: [0,1],
+                        message: 'ATTENTION. You did not select any records to delete. If no records are selected, then this action will DELETE ALL RECORDS in the table. Are you sure you want to delete all records in this table ? ⚠️'
+                    })
+                    if (msgBox === 0) {
+                        $('input.data-checkbox').prop('checked', false);
+                        // $('tbody#data tr').removeClass('blocked');
+                    } else {
+                        deleteAllRecords();
+                    }
+                } else {
+                    let msgBox = dialog.showMessageBoxSync({
+                        type: 'question',
+                        title: 'Delete Records',
+                        buttons:['No', 'Yes'],
+                        defaultId: [0,1],
+                        message: 'Are you sure you want to delete selected records ? ⚠️'
+                    })
+                    if (msgBox === 0) {
+                        $('input.data-checkbox').prop('checked', false);
+                        // $('tbody#data tr').removeClass('blocked');
+                    } else {
+                        join_ids = array_ids.join(',');
+                        deleteMultipleRecords(join_ids);
+                    }
+                }
+            }
+        }
+
+        selectAll = () => {
+            $('input.data-checkbox').prop('checked', true);
+            $('tbody#data tr').addClass('blocked');
+           
+        }
+
+        unSelectAll = () => {
+            $('input.data-checkbox').prop('checked', false);
+            $('tbody#data tr').removeClass('blocked');
+        }
+
+        //pagination
+        $('#first-page').click(function(e) {
+            e.preventDefault();
+            let searchVal = $(`#search-data`).val();
+            let total_row_displayed = $('#row_per_page').val();
+            $('#page_number').val(1);
+            load_data(1, total_row_displayed, searchVal);
+        });
+
+        $('#last-page').click(function(e) {
+            e.preventDefault();
+            let total_pages = $('#total_pages').val();
+            $('#page_number').val(total_pages);
+            let total_row_displayed = $('#row_per_page').val();
+            let searchVal = $(`#search-data`).val();
+            load_data(total_pages, total_row_displayed, searchVal);
+        });
+
+        $('#page_number').keyup(function(e) {
+            //
+            e.preventDefault();
+            let page_number = $(this).val();
+            let total_row_displayed = $('#row_per_page').val();
+            let searchVal = $(`#search-data`).val();
+            load_data(page_number, total_row_displayed, searchVal);
+        });
+
+        $('#next-page').click(function(e) {
+            e.preventDefault();
+            let searchVal = $(`#search-data`).val();
+            let total_pages = $('#total_pages').val();
+            let input_val = $('#page_number').val();
+            if(input_val == '') {
+                input_val = 1;
+            }
+            var page_no = parseInt(input_val);
+            var total_row_displayed = $('#row_per_page').val();
+            if(page_no < total_pages) {
+                $('#page_number').val(page_no + 1);
+                load_data(page_no + 1, total_row_displayed, searchVal);
+            }
+        });
+
+        $('#prev-page').click(function(e) {
+            e.preventDefault();
+            let searchVal = $(`#search-data`).val();
+            let input_val = $('#page_number').val();
+            if(input_val == '') {
+                input_val = 1;
+            }
+            var page_no = parseInt(input_val);
+            var total_row_displayed = $('#row_per_page').val();
+            if(page_no > 1) {
+                $('#page_number').val(page_no - 1);
+                load_data(page_no - 1, total_row_displayed, searchVal);
+            }
+        });
+        $('#row_per_page').change(function(e) {
+            //
+            e.preventDefault();
+            let searchVal = $(`#search-data`).val();
+            var total_row_displayed = $(this).val();
+            var page_number = $('#page_number').val();
+            var total_pages = $('#total_pages').val();
+            if(page_number > total_pages) {
+                var page_number = 1;
+                $('#page_number').val(1);
+            }
+            load_data(page_number, total_row_displayed, searchVal);
+        });
+
+        function search(){
+            let searchVal = $(`#search-data`).val();
+            let page_number = $('#page_number').val();
+            let total_row_displayed = $('#row_per_page').val();
+            load_data(page_number, total_row_displayed, searchVal);
+        }
+
+        $('#search-data').keydown(function(e) {
+            if(e.keyCode == 13) {
+                $('#page_number').val(1);
+                search();
+            }
+        });
+
+        $('#search-btn').click(function(e) {
+            $('#page_number').val(1);
+            search();
+        });
+
+        $('#search-data').keyup(function(e) {
+            let val = $(this).val();
+            let page = $('#page_number').val();
+            let row = $('#row_per_page').val();
+            if(val == '') {
+                load_data(page, row);
+            }
+        });
+
+        //export Data
+        exportData = (ext) => {
+            let array_ids = [];
+            $('input.data-checkbox:checked').each(function() {
+                let ids = $(this).attr('id');
+                array_ids.push(ids);
+            });
+
+            let filePath = dialog.showSaveDialogSync({
+                title: 'Export Data',
+                defaultPath: 'exported-data',
+                filters: [
+                    { name: ext , extensions: [ext] }
+                ],
+            });
+
+            if (filePath != undefined) {
+                if(array_ids.length < 1) {
+                    executeExport(filePath, ext);
+                } else {
+                    let join_ids = array_ids.join(',');
+                    executeExport(filePath, ext, join_ids);
+                }
+            } else {
+                dialog.showMessageBoxSync({
+                type: 'info',
+                title: 'Error',
+                message: 'Something went wrong, please try again.',
+                });
+            }
+        }
+
+        executeExport = (filePath, ext, joinIds = false) => {
+            switch(ext) {
+                case 'csv':
+                    exportCsv(filePath, ext, joinIds);
+                    break;
+                case 'pdf':
+                    exportPdf(filePath, ext, joinIds);
+                    break;
+            }
+        }
+
+        exportCsv = (filePath, ext, joinIds = false) => {
+            let doc_id = $('body').attr('id');
+            switch(doc_id) {
+                case 'product-data':
+                    exportCsvPrdData(filePath, ext, joinIds);
+                    break;
+            }
+        }
+
+        exportPdf = (filePath, ext, joinIds = false) => {
+            let doc_id = $('body').attr('id');
+            switch(doc_id) {
+                case 'product-data':
+                    exportPdfPrdData(filePath, ext, joinIds);
+                    break;
+            }
+        }
+
+        printData = () => {
+            let array_ids = [];
+            $('input.data-checkbox:checked').each(function() {
+                let ids = $(this).attr('id');
+                array_ids.push(ids);
+            });
+
+            if(array_ids.length < 1) {
+                executePrintData();
+                // dialog.showMessageBoxSync({
+                //     type: 'info',
+                //     title: 'Error',
+                //     message: 'Please select at least one data to print.',
+                // });
+            } else {
+                let join_ids = array_ids.join(',');
+                executePrintData(join_ids);
+            }
+        }
+
+        executePrintData = (joinIds = false) => {
+            let doc_id = $('body').attr('id');
+            switch(doc_id) {
+                case 'product-data':
+                    printPrdData(joinIds);
+                    break;
+            }
+        }
+    </script>
+</body>
+
+</html>
